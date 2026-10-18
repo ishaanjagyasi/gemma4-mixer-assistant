@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Live Mixer Study</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="ctrl">
+  <div class="grp">
+    <button id="browserBtn" class="tbtn tog on" data-it="Show/Hide Browser" data-ih="Shows or hides the Browser, where audio effects and samples are found. [Cmd+Alt+B]">≡</button>
+    <span class="sep"></span>
+    <button class="tbtn dim" data-it="External Sync" data-ih="Syncs Live to an external MIDI clock. Not available in this prototype.">EXT</button>
+    <button id="tap" class="tbtn" data-it="Tap Tempo" data-ih="Click repeatedly in time with the music to set the tempo from your clicks.">Tap</button>
+    <div id="tempo" class="vf num" data-it="Tempo" data-ih="The song tempo in beats per minute. Drag up/down, or click and type a value and press Enter. Up/Down arrows change it by 1 BPM (Shift = 0.01)."></div>
+    <span class="dim nudge" data-it="Nudge" data-ih="Temporarily speeds up or slows down playback. Not available in this prototype.">‖‖</span>
+    <span class="field ro" data-it="Time Signature" data-ih="The project's time signature. This prototype uses 4/4.">4 / 4</span>
+    <button id="metro" class="tbtn tog metro" data-it="Metronome" data-ih="Turns the metronome click on or off during playback."><i></i><i></i></button>
+    <span class="field ro dim" data-it="Global Quantization" data-ih="Quantizes clip launches. Not used in the Arrangement View of this prototype.">1 Bar ▾</span>
+  </div>
+  <div class="grp">
+    <button id="followBtn" class="tbtn tog on" data-it="Follow" data-ih="When on, the Arrangement scrolls to keep the playhead in view during playback.">Follow</button>
+    <span id="pos" class="field ro pos" data-it="Arrangement Position" data-ih="The current playback position in bars, beats and sixteenths. When stopped, it shows where playback will start (the insert marker)."></span>
+    <button id="playBtn" class="tbtn icon" data-it="Play" data-ih="Starts Arrangement playback from the insert marker. [Space] Shift-click or Shift+Space continues from where playback was stopped (resume).">▶</button>
+    <button id="stopBtn" class="tbtn icon" data-it="Stop" data-ih="Stops playback. Click Stop again while stopped to return the insert marker to the start of the song. [Space]">■</button>
+    <button id="recBtn" class="tbtn icon rec" data-it="Arrangement Record" data-ih="Records new clips on every armed track, starting at the insert marker. Arm tracks first with their Arm buttons. [F9]">●</button>
+    <span class="sep"></span>
+    <button class="tbtn dim" data-it="MIDI Arrangement Overdub" data-ih="Adds MIDI notes to existing clips while recording. Not available in this prototype.">+</button>
+    <button class="tbtn dim" data-it="Automation Arm" data-ih="Records automation while recording. Not available in this prototype.">◇</button>
+    <span class="sep"></span>
+    <div id="loopStart" class="pos" data-it="Loop/Punch-Region Start" data-ih="Where the loop starts (bar. beat. sixteenth). Drag up/down to move the loop by bars, use the Up/Down arrows (Shift = 1 beat), or click and type e.g. 5.1.1 and press Enter. You can also drag the loop brace above the tracks."></div>
+    <button id="loopBtn" class="tbtn tog" data-it="Loop Switch" data-ih="Turns the Arrangement loop on or off. When on, playback repeats the region under the loop brace. [Cmd+L]">⟲</button>
+    <div id="loopLen" class="pos" data-it="Loop/Punch-Region Length" data-ih="The length of the loop (bars. beats. sixteenths). Drag up/down, use the Up/Down arrows (Shift = 1 beat), or click and type e.g. 8.0.0 or 2.2.0 and press Enter."></div>
+  </div>
+  <div class="grp">
+    <button class="tbtn dim" data-it="Draw Mode Switch" data-ih="Draws notes and automation with the mouse. Not available in this prototype.">✎</button>
+    <span class="lbl dim" data-it="Key Map Mode Switch" data-ih="Maps computer keys to controls. Not available in this prototype.">KEY</span>
+    <span class="lbl dim" data-it="MIDI Map Mode Switch" data-ih="Maps MIDI controllers to controls. Not available in this prototype.">MIDI</span>
+    <span id="cpu" class="field ro" data-it="CPU Load Meter" data-ih="Shows how much processing power the audio engine uses.">2 %</span>
+    <button id="studyBtn" class="tbtn" data-it="Study" data-ih="Opens the study controls. For the experimenter only.">Study</button>
+  </div>
+</header>
+
+<div id="trialBar" hidden>
+  <span id="trialNum"></span>
+  <span id="trialText"></span>
+  <button id="doneBtn" class="tbtn">Done <kbd>Ctrl ↵</kbd></button>
+</div>
+
+<main id="work">
+  <section id="browser">
+    <input id="search" class="field" placeholder="Search (Cmd+F)" data-it="Browser Search" data-ih="Type to filter the list of devices or samples.">
+    <div class="bcols">
+      <ul id="cats"></ul>
+      <ul id="items"></ul>
+    </div>
+  </section>
+  <section id="info" data-it="Info View" data-ih="Shows the name and function of whatever is under the mouse. Show or hide it with the button in the bottom-left corner. [Shift+?]">
+    <b id="infoTitle">Info View</b>
+    <p id="infoText">Hover over any control to see what it does.</p>
+  </section>
+  <section id="arr">
+    <div id="arrScroll"><div id="arrInner"></div></div>
+    <div id="mixer" hidden><div id="strips"></div></div>
+  </section>
+  <section id="detail"><div id="devices"></div></section>
+  <aside id="assistant">
+    <div class="ahead">Assistant <span id="aiState" class="pill">Ready</span></div>
+    <input id="typed" class="field" placeholder="Type a command and press Enter" data-it="Assistant" data-ih="Tell the assistant what to change, in your own words (e.g. &quot;bring the kick down a touch and add reverb to the snare&quot;). It sees the current session, including the selected track and time selection, and makes the changes. [Enter] sends.">
+    <label class="lbl2">You said</label>
+    <div id="transcript" class="box">—</div>
+    <label class="lbl2">Changes made</label>
+    <ol id="plan" class="box" data-it="Changes Made" data-ih="Everything the assistant's last request changed in the session. Check it; Undo reverts the whole request in one step."></ol>
+    <div id="answer" class="box small" hidden></div>
+    <div class="row">
+      <button id="undoBtn" class="tbtn" disabled data-it="Undo Assistant" data-ih="Reverts everything the assistant's last request changed, in one step. [Cmd+Z] also works.">Undo</button>
+    </div>
+    <div class="row small"><span>Model</span><input id="model" class="field" value="gemma4-mixer"></div>
+  </aside>
+  </aside>
+</main>
+
+<footer id="status">
+  <button id="infoBtn" class="sbtn on" data-it="Show/Hide Info View" data-ih="Shows or hides the Info View in the bottom-left corner. [Shift+?]">?</button>
+  <span id="statusMsg"></span>
+  <button id="gridBtn" class="sbtn wide grid" data-it="Grid" data-ih="The current grid size. Clips, the insert marker, time selections and the loop brace snap to it. Click to choose an adaptive grid (follows the zoom) or a fixed grid. [Cmd+1] narrower, [Cmd+2] wider, [Cmd+3] triplets, [Cmd+4] snap on/off (use Ctrl instead of Cmd if the browser takes the shortcut)."></button>
+  <button id="mixerBtn" class="sbtn wide" data-it="Show/Hide Arrangement Mixer" data-ih="Shows or hides the Mixer below the Arrangement: a channel strip for every track with its fader, pan, sends, Activator, Solo and Arm. [Cmd+Alt+M]">Mixer</button>
+  <span id="selName" data-it="Selected Track" data-ih="The name of the selected track. Its devices are shown in the Device View."></span>
+  <button id="detailBtn" class="sbtn on" data-it="Show/Hide Detail View" data-ih="Shows or hides the Device View at the bottom of the window. [Cmd+Alt+L]">▾</button>
+</footer>
+
+<div id="menu" hidden></div>
+
+<dialog id="studyDlg">
+  <form method="dialog">
+    <h3>Study session</h3>
+    <label>Participant ID <input id="pid" class="field" required></label>
+    <label>Condition
+      <select id="cond" class="field"><option value="mouse">Mouse + keys</option><option value="voice">Voice + AI</option></select>
+    </label>
+    <label>Trials <input id="from" class="field num" type="number" value="1" min="1"> to <input id="to" class="field num" type="number" value="10" min="1"></label>
+    <div class="row"><button id="startBtn" class="tbtn" value="start">Start</button><button class="tbtn" value="cancel" formnovalidate>Cancel</button><button id="exportBtn" class="tbtn" type="button">Export</button></div>
+  </form>
+</dialog>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

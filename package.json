@@ -1,0 +1,11 @@
+{
+  "name": "hai-mixer-study",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen": "node gen.js",
+    "test": "node --test test.js",
+    "eval": "node eval.js",
+    "start": "node server.js"
+  }
+}

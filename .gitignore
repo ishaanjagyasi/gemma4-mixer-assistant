@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+# course material
+HAI FA 26 Assignment 2 Instruction.pdf
+# the study set and its results stay private until the A3 study is done (node gen.js / node eval.js recreate them)
+data/trials.json
+data/trials.csv
+results/

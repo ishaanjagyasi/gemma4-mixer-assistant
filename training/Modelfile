@@ -1,0 +1,9 @@
+# Ollama model for the fine-tuned Gemma 4 E4B (run from the folder holding the GGUF):
+#   ollama create gemma4-mixer -f Modelfile
+# The renderer/parser are the ones the stock gemma4:e4b uses, so tools and tool calls are formatted the same way.
+FROM ./gemma4-mixer-Q4_K_M.gguf
+RENDERER gemma4
+PARSER gemma4
+PARAMETER temperature 1
+PARAMETER top_k 64
+PARAMETER top_p 0.95
