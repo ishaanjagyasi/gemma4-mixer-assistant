@@ -27,7 +27,8 @@ These are synthetic chat examples that teach a model to turn a music producer's 
 Ableton Live-style DAW. They were used to fine-tune
 [ishaanjagyasi/gemma4-e4b-mixer-assistant](https://huggingface.co/ishaanjagyasi/gemma4-e4b-mixer-assistant).
 
-Made for the University of Michigan course *Human-AI Interaction* (Fall 2026, Assignment 2).
+Made for the University of Michigan course *Human-AI Interaction* (Fall 2026, Assignment 2). The generator code
+is on GitHub: [ishaanjagyasi/gemma4-mixer-assistant](https://github.com/ishaanjagyasi/gemma4-mixer-assistant) (`dataset.js`, `gen.js`).
 
 | Split | Examples | Tool calls | Seed |
 |---|---|---|---|

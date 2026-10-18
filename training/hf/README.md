@@ -22,7 +22,8 @@ for an Ableton Live-style DAW. For example:
 > → `set_volume(Kick, -1, relative)`, `add_effect(Snare, Reverb)`, `set_loop(start_bar 5, length 4)`
 
 It was made for the University of Michigan course *Human-AI Interaction* (Fall 2026, Assignment 2). The app, the
-dataset generator, the evaluation and the training code are in the course submission.
+dataset generator, the evaluation and the training code are on GitHub:
+[ishaanjagyasi/gemma4-mixer-assistant](https://github.com/ishaanjagyasi/gemma4-mixer-assistant).
 
 ## Files
 
