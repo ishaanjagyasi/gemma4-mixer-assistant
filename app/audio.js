@@ -1,7 +1,7 @@
 // Web Audio engine: synthesised parts for the demo clips and browser samples, Live-style audio effects,
 // return tracks with sends, arrangement playback (loop, metronome), sample preview and post-fader meter levels.
-import { VOL_MIN } from './core.js';
-export { DEVICES, SAMPLES, deviceDefaults, fmtParam } from './catalog.js';
+import { VOL_MIN } from '../lib/core.js';
+export { DEVICES, SAMPLES, deviceDefaults, fmtParam } from '../lib/catalog.js';
 
 // Step patterns (16ths in a bar) and decay in steps; also used to draw the clip waveforms.
 const ALL = [...Array(16).keys()], EVEN = ALL.filter(s => s % 2 === 0);

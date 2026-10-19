@@ -1,6 +1,6 @@
 import { createDaw } from './daw.js';
-import { TOOLS } from './core.js';
-import { messages, readReply } from './prompt.js';
+import { TOOLS } from '../lib/core.js';
+import { messages, readReply } from '../lib/prompt.js';
 
 const $ = s => document.querySelector(s);
 const daw = createDaw({ onEvent: (type, data) => console.debug(type, data) });

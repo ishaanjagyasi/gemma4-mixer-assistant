@@ -1,7 +1,7 @@
 // Live 12-style Arrangement View: control bar, browser, Info View, track lanes with headers, return tracks,
 // Arrangement Mixer, Device View and status bar. Mixer changes on the study tracks go through core.applyAction
 // so the study can score them; every edit is logged via onEvent and can be undone.
-import { defaultState, clone, applyAction, applyCalls, describeChanges, resolveTrack, parsePan, fmtVol, fmtPan, VOL_MIN, VOL_MAX } from './core.js';
+import { defaultState, clone, applyAction, applyCalls, describeChanges, resolveTrack, parsePan, fmtVol, fmtPan, VOL_MIN, VOL_MAX } from '../lib/core.js';
 import { createEngine, DEVICES, SOUNDS, SAMPLES, deviceDefaults, fmtParam } from './audio.js';
 
 const $ = (s, el = document) => el.querySelector(s);

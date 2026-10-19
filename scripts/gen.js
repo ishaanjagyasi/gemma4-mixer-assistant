@@ -1,11 +1,13 @@
 // Generates the datasets:
 //   data/trials.json + data/trials.csv   the study set: 200 standard trials + the hard trials (used by the app; the CSV is the submission file)
 //   data/train.jsonl + data/val.jsonl    chat-format examples for fine-tuning, disjoint from the study set
-// Usage: node gen.js [studyN=200] [trainN=3000] [valN=300]
+// Usage: node scripts/gen.js [studyN=200] [trainN=3000] [valN=300]
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { toCSV } from './core.js';
-import { generateStudy, generateHard, generateTraining, trialKey } from './dataset.js';
-import { trainingExample } from './prompt.js';
+import { toCSV } from '../lib/core.js';
+import { generateStudy, generateHard, generateTraining, trialKey } from '../lib/dataset.js';
+import { trainingExample } from '../lib/prompt.js';
+
+process.chdir(new URL('..', import.meta.url).pathname); // paths below are relative to the repo root
 
 const [studyN = 200, trainN = 3000, valN = 300] = process.argv.slice(2).map(Number);
 const standard = generateStudy(studyN, 2026).map(t => ({ ...t, set: 'standard', challenge: '' }));

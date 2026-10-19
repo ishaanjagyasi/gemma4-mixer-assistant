@@ -25,7 +25,9 @@ createServer(async (req, res) => {
     await writeFile(join(root, 'results', name.replace(/[^\w.-]/g, '_')), content);
     return res.end('ok');
   }
-  const path = normalize(join(root, url.pathname === '/' ? 'index.html' : url.pathname));
+  // The app lives in app/ and is served at /; the shared code (lib/) and the datasets (data/) keep their own paths.
+  const p = url.pathname === '/' ? '/index.html' : url.pathname;
+  const path = normalize(join(root, /^\/(lib|data)\//.test(p) ? '' : 'app', p));
   if (!path.startsWith(root)) return res.writeHead(403).end();
   try {
     const data = await readFile(path);

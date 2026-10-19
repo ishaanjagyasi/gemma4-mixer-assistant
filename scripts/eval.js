@@ -1,12 +1,14 @@
 // AI-only evaluation: runs a model (through Ollama) on every study trial, applies its tool calls to the session and
 // scores the result against the target session with core.js's score().
-// Usage: node eval.js [--model gemma4:e4b] [--label base] [--limit N] [--host http://127.0.0.1:11434]
+// Usage: node scripts/eval.js [--model gemma4:e4b] [--label base] [--limit N] [--host http://127.0.0.1:11434]
 // Writes results/ai/<label>/: predictions.jsonl (one line per trial, appended as it goes, so a stopped run resumes),
 // results.csv (the study set with the model-output column: the submission file) and summary.md (accuracy and the error distribution table).
 import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } from 'node:fs';
-import { TOOLS, applyCalls, score, toCSV, ERROR_TYPES } from './core.js';
-import { messages, readReply } from './prompt.js';
-import { CHALLENGES } from './dataset.js';
+import { TOOLS, applyCalls, score, toCSV, ERROR_TYPES } from '../lib/core.js';
+import { messages, readReply } from '../lib/prompt.js';
+import { CHALLENGES } from '../lib/dataset.js';
+
+process.chdir(new URL('..', import.meta.url).pathname); // paths below are relative to the repo root
 
 const opt = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : d; };
 const MODEL = opt('model', 'gemma4:e4b'), LABEL = opt('label', MODEL.replace(/[^\w.-]/g, '_')), LIMIT = +opt('limit', Infinity);

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyCalls, score, diff, clone, TOOL_NAMES } from './core.js';
-import { generateStudy, generateHard, generateTraining, trialKey, session, CHALLENGES } from './dataset.js';
-import { rng } from './core.js';
+import { applyCalls, score, diff, clone, TOOL_NAMES } from '../lib/core.js';
+import { generateStudy, generateHard, generateTraining, trialKey, session, CHALLENGES } from '../lib/dataset.js';
+import { rng } from '../lib/core.js';
 
 const study = generateStudy(200, 2026);
 
