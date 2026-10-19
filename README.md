@@ -1,55 +1,62 @@
-# Mixer Assistant
+# Gemma 4 Mixer Assistant
 
-Talk to a music app in plain words, and an AI makes the changes.
+Course project for HAI FA26 (Human-AI Interaction), Assignment 2.
 
-You type something like *"bring the kick down a touch and put a reverb on the snare"*. A small AI model
-(Gemma 4 E4B, which we fine-tuned) turns it into actions, such as lowering the kick's volume by 1 dB and adding a
-reverb to the snare. The app makes the changes, shows you a list of them, and lets you undo them with one click.
+The task: a producer describes a change to a music session in natural language, for example *"bring the kick down
+a touch and put a reverb on the snare"*, and a model translates it into tool calls (`set_volume`, `add_effect`, ...)
+for a DAW. The project includes:
 
-Made for HAI FA26, Assignment 2.
+- a browser DAW modelled on Ableton Live's Arrangement View, with an assistant panel that applies the model's
+  tool calls, lists the changes and can undo them;
+- a generator for the training data and the study set;
+- Gemma 4 E4B fine-tuned with LoRA on 3,000 generated examples;
+- an evaluation script that scores a model's tool calls against the target session.
 
-## Try it
+## Results
 
-You need [Node.js](https://nodejs.org) and [Ollama](https://ollama.com).
+Evaluated on 284 study trials that are not in the training data. A trial counts as correct only if the session after
+the model's tool calls exactly matches the target.
 
-1. Get the fine-tuned model from Hugging Face:
-   ```bash
-   hf download ishaanjagyasi/gemma4-e4b-mixer-assistant gemma4-mixer-Q4_K_M.gguf Modelfile --local-dir gemma4-mixer
-   cd gemma4-mixer && ollama create gemma4-mixer -f Modelfile && cd ..
-   ```
-2. Start the app:
-   ```bash
-   node server.js
-   ```
-3. Open http://localhost:8000 and type a request in the Assistant panel on the right.
-
-## How well it works
-
-We tested it on 284 requests it had never seen. A request counts as right only if every change is exactly correct.
-
-| | Gemma 4 before training | After our training |
+| | Gemma 4 E4B (base) | Fine-tuned |
 |---|---|---|
-| Normal requests (200) | 47% | **97%** |
-| Hard requests (84) | 19% | **66%** |
+| Standard set (200) | 47.0% | 97.0% |
+| Hard set (84) | 19.0% | 65.5% |
 
-The hard requests are kinds the model was never trained on, for example *"make the pad 5 dB quieter than the
-kick"* or two tracks with the same name. That is where it still makes mistakes, so check its changes.
+The hard set has request types the training data does not cover, such as values relative to another track
+(*"5 dB quieter than the kick"*), tracks that share a name, and unseen slang. Most remaining errors are there.
 
-## What's in here
+## Files
 
-| File | What it does |
+| File | Contents |
 |---|---|
-| `index.html`, `app.js`, `daw.js`, `audio.js`, `style.css` | The app, which looks like Ableton Live |
-| `core.js` | The 24 actions the AI can take, and the scoring |
-| `prompt.js` | What the AI is told with each request |
-| `dataset.js`, `gen.js` | Make the training and test requests |
-| `eval.js` | Tests a model on every request and scores it |
-| `test.js` | Checks that the code works (`node --test test.js`) |
-| `training/` | How we trained the model on a GPU, plus the training logs |
-| `data/train.jsonl`, `data/val.jsonl` | The 3,000 training and 300 practice examples |
+| `index.html`, `app.js`, `daw.js`, `audio.js`, `style.css` | The DAW interface |
+| `core.js` | Session model, the 24 tool definitions, applying calls, scoring |
+| `prompt.js` | System prompt and session text sent to the model |
+| `dataset.js`, `gen.js` | Data generation |
+| `eval.js` | Evaluation through Ollama |
+| `test.js` | Tests (`node --test test.js`) |
+| `training/` | Fine-tuning scripts (U-M Great Lakes), GGUF conversion, Ollama Modelfile, logs |
+| `data/train.jsonl`, `data/val.jsonl` | Training (3,000) and validation (300) examples |
 
-**The test set is not here.** It holds the right answers for the user study in Assignment 3, so it stays private
-until then.
+The study set (`data/trials.*`) and evaluation outputs (`results/`) are not in this repository, since the study set
+will be used in the Assignment 3 user study.
+
+## Running
+
+Requires Node.js 20+ and Ollama 0.40+.
+
+```bash
+# fine-tuned model
+hf download ishaanjagyasi/gemma4-e4b-mixer-assistant gemma4-mixer-Q4_K_M.gguf Modelfile --local-dir gemma4-mixer
+cd gemma4-mixer && ollama create gemma4-mixer -f Modelfile && cd ..
+
+# app at http://localhost:8000
+node server.js
+
+# data and evaluation
+node gen.js
+node eval.js --model gemma4-mixer --label finetuned
+```
 
 ## Links
 
